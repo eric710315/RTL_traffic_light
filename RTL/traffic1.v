@@ -34,14 +34,14 @@ module traffic(
     reg [6:0] cycle = 7'd0;
     
     always@(posedge clk) begin
-        cycle <= cycle + 1;
         if (cycle == 68) cycle <= 1;
+        else cycle <= cycle + 1;
     end
     //첫 번째 주기에서 cycle은 초기 값을 가지고 이미 계산을 함. 첫 번째 주기의 cycle은 1이 됨.
-    
+    //68 번째 주기 다음 주기에서 cycle은 1이 됨. 그러나 reg에는 68번째 주기의 값들이 들어감.
     
     always@(posedge clk) begin
-        if (cycle < 20) h_car_traffic = GREEN;
+        if (cycle < 20 || cycle == 68) h_car_traffic = GREEN;
         else if (cycle < 22) h_car_traffic = YELLOW;
         else if (cycle < 32) h_car_traffic = LEFT;
         else if (cycle < 34) h_car_traffic = YELLOW;
@@ -49,7 +49,7 @@ module traffic(
     end    
     
     always@(posedge clk) begin
-        if (cycle < 34) v_car_traffic = RED;
+        if (cycle < 34 || cycle == 68) v_car_traffic = RED;
         else if (cycle < 54) v_car_traffic = GREEN;
         else if (cycle < 56) v_car_traffic = YELLOW;
         else if (cycle < 66) v_car_traffic = LEFT;
@@ -58,14 +58,14 @@ module traffic(
     end
     
     always@(posedge clk) begin
-        if (cycle < 34) h_walker_traffic = RED;
+        if (cycle < 34 || cycle == 68) h_walker_traffic = RED;
         else if (cycle < 48) h_walker_traffic = GREEN;
         else if (cycle < 54) h_walker_traffic = GREEN_TWINKLE;
         else h_walker_traffic = RED;
     end
     
     always@(posedge clk) begin
-        if (cycle < 14) v_walker_traffic =  GREEN;
+        if (cycle < 14 || cycle == 68) v_walker_traffic =  GREEN;
         else if (cycle < 20) v_walker_traffic = GREEN_TWINKLE;
         else v_walker_traffic = RED;
     end
