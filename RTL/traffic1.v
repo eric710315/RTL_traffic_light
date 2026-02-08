@@ -21,7 +21,7 @@
 
 
 module traffic(
-    input clk,
+    input clk, reset_n,
     output reg [2:0] h_car_traffic, h_walker_traffic, v_car_traffic, v_walker_traffic
     );
     
@@ -34,7 +34,7 @@ module traffic(
     reg [6:0] cycle = 7'd0;
     
     always@(posedge clk) begin
-        if (cycle == 68) cycle <= 1;
+        if (cycle == 68 || reset_n == 0) cycle <= 1;
         else cycle <= cycle + 1;
     end
     //첫 번째 주기에서 cycle은 초기 값을 가지고 이미 계산을 함. 첫 번째 주기의 cycle은 1이 됨.
