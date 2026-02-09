@@ -24,10 +24,8 @@ module traffic(
     input wire clk, 
     input wire reset_n,
     input wire i_start,
-    output reg [3:0] o_h_car_traffic, 
-    output reg [3:0] o_v_car_traffic,
-    output reg [1:0] o_h_walker_traffic,    
-    output reg [1:0] o_v_walker_traffic
+    output reg [3:0] o_car_traffic, 
+    output reg [1:0] o_walker_traffic
     );
     
     parameter [3:0] C_RED = 4'b1000;
@@ -45,112 +43,69 @@ module traffic(
     
     
     always@(posedge clk) begin
-        if (i_start) begin
-            if (r_cycle == 7'd68 || reset_n == 1'b0) begin
-                r_cycle <= 7'd1;
-            end
-            else begin 
-                r_cycle <= r_cycle + 7'd1;
-            end
+        if (!reset_n) begin
+            r_cycle <= 7'd0;
         end
         else begin
-            r_cycle <= 7'd0;
+            if (i_start) begin
+                if (r_cycle == 7'd68) begin
+                    r_cycle <= 7'd1;
+                end
+                else begin 
+                    r_cycle <= r_cycle + 7'd1;
+                end
+            end
+            else begin
+                r_cycle <= 7'd0;
+            end
         end
     end
     
     always@(*) begin
         if (i_start) begin
             if (r_cycle <= 7'd20) begin 
-                o_h_car_traffic = C_GREEN;
+                o_car_traffic = C_GREEN;
             end
             else if (r_cycle <= 7'd22) begin 
-                o_h_car_traffic = C_YELLOW;
+                o_car_traffic = C_YELLOW;
             end
             else if (r_cycle <= 7'd32) begin 
-                o_h_car_traffic = C_LEFT;
+                o_car_traffic = C_LEFT;
             end
             else if (r_cycle <= 7'd34) begin 
-                o_h_car_traffic = C_YELLOW;
+                o_car_traffic = C_YELLOW;
             end
             else begin 
-                o_h_car_traffic = C_RED;
+                o_car_traffic = C_RED;
             end
          end
          else begin
-            o_h_car_traffic = C_NONE;
+            o_car_traffic = C_NONE;
          end
      end
     
     always@(*) begin
         if (i_start) begin
             if (r_cycle <= 7'd34) begin
-                o_v_car_traffic = C_RED;
-            end
-            else if (r_cycle <= 7'd54) begin
-                o_v_car_traffic = C_GREEN;
-            end
-            else if (r_cycle <= 7'd56) begin
-                o_v_car_traffic = C_YELLOW;
-            end
-            else if (r_cycle <= 7'd66) begin
-                o_v_car_traffic = C_LEFT;
-            end
-            else if (r_cycle <= 7'd68) begin
-                o_v_car_traffic = C_YELLOW;
-            end
-            else begin
-                o_v_car_traffic = C_RED;
-            end
-        end
-        else begin
-            o_v_car_traffic = C_NONE;
-        end
-    end
-    
-    always@(*) begin
-        if (i_start) begin
-            if (r_cycle <= 7'd34) begin
-                o_h_walker_traffic = W_RED;
+                o_walker_traffic = W_RED;
             end
             else if (r_cycle <= 7'd48) begin
-                o_h_walker_traffic = W_GREEN;
+                o_walker_traffic = W_GREEN;
             end
             else if (r_cycle <= 7'd54) begin
-                if (clk) begin
-                    o_h_walker_traffic = W_GREEN;
+                if (r_cycle[0] == 1'b0) begin
+                    o_walker_traffic = W_GREEN;
                 end
                 else begin
-                    o_h_walker_traffic = W_NONE;
+                    o_walker_traffic = W_NONE;
                 end
             end
             else begin
-                o_h_walker_traffic = W_RED;
+                o_walker_traffic = W_RED;
             end
         end
         else begin
-            o_h_walker_traffic = W_NONE;
-        end
-    end
-    
-    always@(*) begin
-        if (i_start) begin
-            if (r_cycle <= 7'd14) begin
-                o_v_walker_traffic = W_GREEN;
-            end
-            else if (r_cycle <= 7'd20) begin
-                if (clk) begin
-                    o_v_walker_traffic = W_GREEN;
-                end
-                else begin
-                    o_v_walker_traffic = W_NONE;
-                end
-            end
-            else begin
-                o_v_walker_traffic = W_RED;
-            end
-        end
-        else begin
-            o_v_walker_traffic = W_NONE;
+            o_walker_traffic = W_NONE;
         end
     end
     
