@@ -39,7 +39,7 @@ module traffic(
     
     
     
-    reg [6:0] r_cycle = 7'd0;
+    reg [6:0] r_cycle;
     
     
     always@(posedge clk) begin
