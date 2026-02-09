@@ -27,7 +27,7 @@ module tb_traffic();
 
     parameter CLK_PERIOD = 4'd10;
 
-    traffic DUT (.clk(clock), .reset_n(reset), .h_car_traffic(hct), .h_walker_traffic(hwt), .v_car_traffic(vct), .v_walker_traffic(vwt));
+    traffic DUT (.clk(clock), .reset_n(reset), .o_h_car_traffic(hct), .o_h_walker_traffic(hwt), .o_v_car_traffic(vct), .o_v_walker_traffic(vwt));
     
     always begin
         clock = 1;
@@ -35,7 +35,7 @@ module tb_traffic();
     end
 
     initial begin
-        #510
+        #210
         reset = 1'b0;
         #10
         reset = 1'b1;
