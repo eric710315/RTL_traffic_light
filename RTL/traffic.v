@@ -34,24 +34,28 @@ module traffic(
     reg [6:0] r_cycle = 7'd0;
     
     always@(posedge clk) begin
-        if (r_cycle == 68 || reset_n == 0) r_cycle <= 1;
-        else r_cycle <= r_cycle + 1;
+        if (r_cycle == 7'd68 || reset_n == 1'b0) begin
+            r_cycle <= 7'd1;
+        end
+        else begin 
+            r_cycle <= r_cycle + 7'd1;
+        end
     end
     //첫 번째 주기에서 cycle은 초기 값을 가지고 이미 계산을 함. 첫 번째 주기의 cycle은 1이 됨.
     //68 번째 주기 다음 주기에서 cycle은 1이 됨. 그러나 reg에는 68번째 주기의 값들이 들어감.
     //reset도 마찬가지로 reset=0인 주기에서  cycle은 1이 되지만, reg는 이전의 cycle 값으로 판단한다. 
     
     always@(*) begin
-        if (r_cycle <= 20) begin 
+        if (r_cycle <= 7'd20) begin 
             o_h_car_traffic = GREEN;
         end
-        else if (r_cycle <= 22) begin 
+        else if (r_cycle <= 7'd22) begin 
             o_h_car_traffic = YELLOW;
         end
-        else if (r_cycle <= 32) begin 
+        else if (r_cycle <= 7'd32) begin 
             o_h_car_traffic = LEFT;
         end
-        else if (r_cycle <= 34) begin 
+        else if (r_cycle <= 7'd34) begin 
             o_h_car_traffic = YELLOW;
         end
         else begin 
@@ -60,19 +64,19 @@ module traffic(
      end
     
     always@(*) begin
-        if (r_cycle <= 34) begin
+        if (r_cycle <= 7'd34) begin
             o_v_car_traffic = RED;
         end
-        else if (r_cycle <= 54) begin
+        else if (r_cycle <= 7'd54) begin
             o_v_car_traffic = GREEN;
         end
-        else if (r_cycle <= 56) begin
+        else if (r_cycle <= 7'd56) begin
             o_v_car_traffic = YELLOW;
         end
-        else if (r_cycle <= 66) begin
+        else if (r_cycle <= 7'd66) begin
             o_v_car_traffic = LEFT;
         end
-        else if (r_cycle <= 68) begin
+        else if (r_cycle <= 7'd68) begin
             o_v_car_traffic = YELLOW;
         end
         else begin
@@ -81,13 +85,13 @@ module traffic(
     end
     
     always@(*) begin
-        if (r_cycle <= 34) begin
+        if (r_cycle <= 7'd34) begin
             o_h_walker_traffic = RED;
         end
-        else if (r_cycle <= 48) begin
+        else if (r_cycle <= 7'd48) begin
             o_h_walker_traffic = GREEN;
         end
-        else if (r_cycle <= 54) begin
+        else if (r_cycle <= 7'd54) begin
             o_h_walker_traffic = GREEN_TWINKLE;
         end
         else begin
@@ -96,10 +100,10 @@ module traffic(
     end
     
     always@(*) begin
-        if (r_cycle <= 14) begin
+        if (r_cycle <= 7'd14) begin
             o_v_walker_traffic = GREEN;
         end
-        else if (r_cycle <= 20) begin
+        else if (r_cycle <= 7'd20) begin
             o_v_walker_traffic = GREEN_TWINKLE;
         end
         else begin
