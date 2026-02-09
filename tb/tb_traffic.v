@@ -23,19 +23,22 @@
 module tb_traffic();
     reg clock;
     reg reset = 1'b1;
-    wire [2:0] hct, hwt, vct, vwt;
+    reg start = 1'b0;
+    wire [3:0] ct;
+    wire [1:0] wt;
 
     parameter CLK_PERIOD = 4'd10;
 
-    traffic DUT (.clk(clock), .reset_n(reset), .o_h_car_traffic(hct), .o_h_walker_traffic(hwt), .o_v_car_traffic(vct), .o_v_walker_traffic(vwt));
+    traffic DUT (.clk(clock), .reset_n(reset), .i_start(start), .o_car_traffic(ct), .o_walker_traffic(wt));
     
     always begin
-        clock = 1;
-        forever #(CLK_PERIOD/2) clock = ~clock;
+        clock = 1'b1;
+        forever #(CLK_PERIOD/4'd2) clock = ~clock;
     end
 
     initial begin
-        #210
+        start = 1'b1;
+        #700
         reset = 1'b0;
         #10
         reset = 1'b1;
