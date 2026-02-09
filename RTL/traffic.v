@@ -40,69 +40,70 @@ module traffic(
     //첫 번째 주기에서 cycle은 초기 값을 가지고 이미 계산을 함. 첫 번째 주기의 cycle은 1이 됨.
     //68 번째 주기 다음 주기에서 cycle은 1이 됨. 그러나 reg에는 68번째 주기의 값들이 들어감.
     //reset도 마찬가지로 reset=0인 주기에서  cycle은 1이 되지만, reg는 이전의 cycle 값으로 판단한다. 
-    always@(posedge clk) begin
-        if (r_cycle < 20 || r_cycle == 68 || reset_n == 0) begin 
-            o_h_car_traffic <= GREEN;
+    
+    always@(*) begin
+        if (r_cycle <= 20) begin 
+            o_h_car_traffic = GREEN;
         end
-        else if (r_cycle < 22) begin 
-            o_h_car_traffic <= YELLOW;
+        else if (r_cycle <= 22) begin 
+            o_h_car_traffic = YELLOW;
         end
-        else if (r_cycle < 32) begin 
-            o_h_car_traffic <= LEFT;
+        else if (r_cycle <= 32) begin 
+            o_h_car_traffic = LEFT;
         end
-        else if (r_cycle < 34) begin 
-            o_h_car_traffic <= YELLOW;
+        else if (r_cycle <= 34) begin 
+            o_h_car_traffic = YELLOW;
         end
         else begin 
-            o_h_car_traffic <= RED;
+            o_h_car_traffic = RED;
         end
-    end    
+     end
     
-    always@(posedge clk) begin
-        if (r_cycle < 34 || r_cycle == 68 || reset_n == 0) begin
-            o_v_car_traffic <= RED;
+    always@(*) begin
+        if (r_cycle <= 34) begin
+            o_v_car_traffic = RED;
         end
-        else if (r_cycle < 54) begin
-            o_v_car_traffic <= GREEN;
+        else if (r_cycle <= 54) begin
+            o_v_car_traffic = GREEN;
         end
-        else if (r_cycle < 56) begin
-            o_v_car_traffic <= YELLOW;
+        else if (r_cycle <= 56) begin
+            o_v_car_traffic = YELLOW;
         end
-        else if (r_cycle < 66) begin
-            o_v_car_traffic <= LEFT;
+        else if (r_cycle <= 66) begin
+            o_v_car_traffic = LEFT;
         end
-        else if (r_cycle < 68) begin
-            o_v_car_traffic <= YELLOW;
+        else if (r_cycle <= 68) begin
+            o_v_car_traffic = YELLOW;
         end
         else begin
-            o_v_car_traffic <= RED;
+            o_v_car_traffic = RED;
         end
     end
     
-    always@(posedge clk) begin
-        if (r_cycle < 34 || r_cycle == 68 || reset_n == 0) begin
-            o_h_walker_traffic <= RED;
+    always@(*) begin
+        if (r_cycle <= 34) begin
+            o_h_walker_traffic = RED;
         end
-        else if (r_cycle < 48) begin
-            o_h_walker_traffic <= GREEN;
+        else if (r_cycle <= 48) begin
+            o_h_walker_traffic = GREEN;
         end
-        else if (r_cycle < 54) begin
-            o_h_walker_traffic <= GREEN_TWINKLE;
+        else if (r_cycle <= 54) begin
+            o_h_walker_traffic = GREEN_TWINKLE;
         end
         else begin
-            o_h_walker_traffic <= RED;
+            o_h_walker_traffic = RED;
         end
     end
     
-    always@(posedge clk) begin
-        if (r_cycle < 14 || r_cycle == 68 || reset_n == 0) begin
-            o_v_walker_traffic <= GREEN;
+    always@(*) begin
+        if (r_cycle <= 14) begin
+            o_v_walker_traffic = GREEN;
         end
-        else if (r_cycle < 20) begin
-            o_v_walker_traffic <= GREEN_TWINKLE;
+        else if (r_cycle <= 20) begin
+            o_v_walker_traffic = GREEN_TWINKLE;
         end
         else begin
-            o_v_walker_traffic <= RED;
+            o_v_walker_traffic = RED;
         end
     end
     
