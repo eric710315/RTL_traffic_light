@@ -21,9 +21,9 @@
 
 
 module traffic(
-    input clk, 
-    input reset_n,
-    input start,
+    input wire clk, 
+    input wire reset_n,
+    input wire i_start,
     output reg [3:0] o_h_car_traffic, 
     output reg [3:0] o_v_car_traffic,
     output reg [1:0] o_h_walker_traffic,    
@@ -45,7 +45,7 @@ module traffic(
     
     
     always@(posedge clk) begin
-        if (start) begin
+        if (i_start) begin
             if (r_cycle == 7'd68 || reset_n == 1'b0) begin
                 r_cycle <= 7'd1;
             end
@@ -59,7 +59,7 @@ module traffic(
     end
     
     always@(*) begin
-        if (start) begin
+        if (i_start) begin
             if (r_cycle <= 7'd20) begin 
                 o_h_car_traffic = C_GREEN;
             end
@@ -82,7 +82,7 @@ module traffic(
      end
     
     always@(*) begin
-        if (start) begin
+        if (i_start) begin
             if (r_cycle <= 7'd34) begin
                 o_v_car_traffic = C_RED;
             end
@@ -108,7 +108,7 @@ module traffic(
     end
     
     always@(*) begin
-        if (start) begin
+        if (i_start) begin
             if (r_cycle <= 7'd34) begin
                 o_h_walker_traffic = W_RED;
             end
@@ -133,7 +133,7 @@ module traffic(
     end
     
     always@(*) begin
-        if (start) begin
+        if (i_start) begin
             if (r_cycle <= 7'd14) begin
                 o_v_walker_traffic = W_GREEN;
             end
