@@ -38,6 +38,9 @@ module traffic(
     parameter [1:0] W_GREEN = 2'b01;
     parameter [1:0] W_NONE = 2'b00;
     
+    parameter [6:0] WHOLE_CYCLE = 7'd68;
+    parameter [6:0] HALF_CYCLE = 7'd34;
+    
     reg [6:0] r_cycle;
     
     always@(posedge clk) begin
@@ -46,12 +49,12 @@ module traffic(
                 r_cycle <= 7'd0;
             end
             else begin
-                r_cycle <= 7'd34;
+                r_cycle <= HALF_CYCLE;
             end
         end
         else begin
             if (i_start) begin
-                if (r_cycle == 7'd68) begin
+                if (r_cycle == WHOLE_CYCLE) begin
                     r_cycle <= 7'd1;
                 end
                 else begin 
@@ -59,13 +62,15 @@ module traffic(
                 end
             end
             else begin
-                r_cycle <= 7'd0;
             end
         end
     end
     
     always@(*) begin
-        if (i_start) begin
+        if (!i_start || !reset_n) begin
+            o_car_traffic = C_NONE;
+         end   
+        else begin
             if (r_cycle <= 7'd20) begin 
                 o_car_traffic = C_GREEN;
             end
@@ -82,14 +87,15 @@ module traffic(
                 o_car_traffic = C_RED;
             end
          end
-         else begin
-            o_car_traffic = C_NONE;
-         end
+         
      end
     
     always@(*) begin
-        if (i_start) begin
-            if (r_cycle <= 7'd34) begin
+        if (!i_start || !reset_n) begin
+            o_walker_traffic = W_NONE;
+        end
+        else begin
+            if (r_cycle <= HALF_CYCLE) begin
                 o_walker_traffic = W_RED;
             end
             else if (r_cycle <= 7'd48) begin
@@ -107,9 +113,7 @@ module traffic(
                 o_walker_traffic = W_RED;
             end
         end
-        else begin
-            o_walker_traffic = W_NONE;
-        end
+        
     end
     
 endmodule
