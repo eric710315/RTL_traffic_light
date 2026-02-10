@@ -25,8 +25,14 @@ module tb_traffic();
     reg reset;
     reg start;
 //    reg [1:0] flag = 2'b10;
-    wire [15:0] ct;
-    wire [7:0] wt;
+    wire [3:0] e_ct;
+    wire [3:0] w_ct;
+    wire [3:0] s_ct;
+    wire [3:0] n_ct;
+    wire [1:0] e_wt;
+    wire [1:0] w_wt;
+    wire [1:0] s_wt;
+    wire [1:0] n_wt;
     
 
     parameter CLK_PERIOD = 4'd10;
@@ -34,8 +40,14 @@ module tb_traffic();
     top DUT (.clk(clock), 
              .reset_n(reset), 
              .i_start(start), 
-             .o_ct(ct), 
-             .o_wt(wt));
+             .o_e_ct(e_ct), 
+             .o_w_ct(w_ct),
+             .o_s_ct(s_ct),
+             .o_n_ct(n_ct),
+             .o_e_wt(e_wt),
+             .o_w_wt(w_wt),
+             .o_s_wt(s_wt),
+             .o_n_wt(n_wt));
     
     always begin
         clock = 1'b1;
