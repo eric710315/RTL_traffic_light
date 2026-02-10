@@ -18,6 +18,43 @@
 // Additional Comments:
 // 
 //////////////////////////////////////////////////////////////////////////////////
+module top(
+    input wire clk,
+    input wire reset_n,
+    input wire i_start,
+    output wire [15:0] o_ct,
+    output wire [7:0] o_wt
+    );
+    traffic U0 (.clk(clk),
+                .reset_n(reset_n),
+                .i_start(i_start),
+                .i_flag(1'b0),
+                .o_car_traffic(o_ct[3:0]),
+                .o_walker_traffic(o_wt[1:0]));
+        
+    traffic U1 (.clk(clk),
+                .reset_n(reset_n), 
+                .i_start(i_start), 
+                .i_flag(1'b1), 
+                .o_car_traffic(o_ct[7:4]), 
+                .o_walker_traffic(o_wt[3:2]));
+        
+    traffic U2 (.clk(clk), 
+                .reset_n(reset_n), 
+                .i_start(i_start), 
+                .i_flag(1'b0), 
+                .o_car_traffic(o_ct[11:8]), 
+                .o_walker_traffic(o_wt[5:4]));
+        
+    traffic U3 (.clk(clk), 
+                .reset_n(reset_n), 
+                .i_start(i_start), 
+                .i_flag(1'b1), 
+                .o_car_traffic(o_ct[15:12]), 
+                .o_walker_traffic(o_wt[7:6]));
+    
+endmodule
+
 
 
 module traffic(
@@ -38,8 +75,6 @@ module traffic(
     parameter [1:0] W_GREEN = 2'b01;
     parameter [1:0] W_NONE = 2'b00;
     
-    parameter [6:0] WHOLE_CYCLE = 7'd68;
-    parameter [6:0] HALF_CYCLE = 7'd34;
     
     reg [6:0] r_cycle;
     
@@ -49,12 +84,12 @@ module traffic(
                 r_cycle <= 7'd0;
             end
             else begin
-                r_cycle <= HALF_CYCLE;
+                r_cycle <= 7'd34;
             end
         end
         else begin
             if (i_start) begin
-                if (r_cycle == WHOLE_CYCLE) begin
+                if (r_cycle == 7'd68) begin
                     r_cycle <= 7'd1;
                 end
                 else begin 
@@ -69,7 +104,7 @@ module traffic(
     always@(*) begin
         if (!i_start || !reset_n) begin
             o_car_traffic = C_NONE;
-         end   
+        end   
         else begin
             if (r_cycle <= 7'd20) begin 
                 o_car_traffic = C_GREEN;
@@ -95,7 +130,7 @@ module traffic(
             o_walker_traffic = W_NONE;
         end
         else begin
-            if (r_cycle <= HALF_CYCLE) begin
+            if (r_cycle <= 7'd34) begin
                 o_walker_traffic = W_RED;
             end
             else if (r_cycle <= 7'd48) begin
