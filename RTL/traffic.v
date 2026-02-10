@@ -22,36 +22,42 @@ module top(
     input wire clk,
     input wire reset_n,
     input wire i_start,
-    output wire [15:0] o_ct,
-    output wire [7:0] o_wt
+    output wire [3:0] o_e_ct,
+    output wire [3:0] o_w_ct,
+    output wire [3:0] o_s_ct,
+    output wire [3:0] o_n_ct,
+    output wire [1:0] o_e_wt,
+    output wire [1:0] o_w_wt,
+    output wire [1:0] o_s_wt,
+    output wire [1:0] o_n_wt
     );
     traffic U0 (.clk(clk),
                 .reset_n(reset_n),
                 .i_start(i_start),
                 .i_flag(1'b0),
-                .o_car_traffic(o_ct[3:0]),
-                .o_walker_traffic(o_wt[1:0]));
+                .o_car_traffic(o_e_ct),
+                .o_walker_traffic(o_e_wt));
         
     traffic U1 (.clk(clk),
                 .reset_n(reset_n), 
                 .i_start(i_start), 
                 .i_flag(1'b1), 
-                .o_car_traffic(o_ct[7:4]), 
-                .o_walker_traffic(o_wt[3:2]));
+                .o_car_traffic(o_w_ct), 
+                .o_walker_traffic(o_w_wt));
         
     traffic U2 (.clk(clk), 
                 .reset_n(reset_n), 
                 .i_start(i_start), 
                 .i_flag(1'b0), 
-                .o_car_traffic(o_ct[11:8]), 
-                .o_walker_traffic(o_wt[5:4]));
+                .o_car_traffic(o_s_ct), 
+                .o_walker_traffic(o_s_wt));
         
     traffic U3 (.clk(clk), 
                 .reset_n(reset_n), 
                 .i_start(i_start), 
                 .i_flag(1'b1), 
-                .o_car_traffic(o_ct[15:12]), 
-                .o_walker_traffic(o_wt[7:6]));
+                .o_car_traffic(o_n_ct), 
+                .o_walker_traffic(o_n_wt));
     
 endmodule
 
