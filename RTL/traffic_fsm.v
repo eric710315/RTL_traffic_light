@@ -101,78 +101,100 @@ module traffic_fsm(
     
     reg [6:0] r_cycle;
     
-    always@(*) begin
-        case (c_state) 
-            SCG     : c_next = SCY;
-            SCY     : c_next = (r_c_sel ? SCL : SCR);
-            SCL     : c_next = SCY;
-            SCR     : c_next = SCG;
-            SCN     : c_next = (r_c_sel ? SCG : SCR);
-            default : c_next = SCR;
-        endcase
-        case (w_state)
-            SWR     : w_next = SWG;
-            SWG     : w_next = (r_w_sel ? SWN : SWR);
-            SWN     : w_next = (r_w_sel ? SWG : SWR);
-            default : w_next = SWR;
-        endcase
-    end
-            
     always@(posedge clk) begin
         if (!reset_n) begin
-            c_state <= SCN;
-            w_state <= SWN;
             if (i_flag) begin
                 r_cycle <= 7'd0;
-                r_c_sel <= 1'b1;
-                r_w_sel <= 1'b0;
             end
             else begin
                 r_cycle <= 7'd34;
-                r_c_sel <= 1'b0;
-                r_w_sel <= 1'b1;
             end
         end
         else begin
             if (i_start) begin
                 if (r_cycle == 7'd68) begin
                     r_cycle <= 7'd1;
-                    c_state <= c_next;
                 end
-                else begin
+                else begin 
                     r_cycle <= r_cycle + 7'd1;
-                    if (r_cycle == 7'd0 || r_cycle == 7'd34) begin
-                        c_state <= c_next;
-                        w_state <= w_next;
-                        r_w_sel <= 1'b1;
-                    end
-                    else if (r_cycle == 7'd20 || r_cycle == 7'd22 || r_cycle == 7'd32) begin
-                        c_state <= c_next;
-                        if (r_cycle == 7'd20) begin
-                            r_c_sel <= 1'b1;
-                        end
-                        else if (r_cycle == 7'd32) begin
-                            r_c_sel <= 1'b0;
-                        end
-                        else begin
-                        end
-                    end
-                    else if (r_cycle == 7'd48 || r_cycle == 7'd49 || r_cycle == 7'd50 || r_cycle == 7'd51 || r_cycle == 7'd52 || r_cycle == 7'd53 || r_cycle == 7'd54) begin
-                        w_state <= w_next;
-                        if (r_cycle == 7'd53) begin
-                            r_w_sel <= 1'b0;
-                        end
-                        else begin
-                            r_w_sel <= 1'b1;
-                        end
-                    end
-                    else begin
-                    end
                 end
             end
             else begin
             end
         end
+    end
+    
+    always@(*) begin
+        if (!reset_n) begin
+            c_next = SCN;
+            w_next = SWN;
+//            if (i_flag) begin
+//                c_next = SCG;
+//                w_next = SWR;
+//            end
+//            else begin
+//                c_next = SCR;
+//                w_next = SWG;
+//            end
+        end
+        
+        else begin
+            if (7'd0 <= r_cycle || r_cycle < 7'd20) begin
+                c_next = SCY;
+                w_next = SWR;
+            end
+            else if (7'd20 <= r_cycle || r_cycle < 7'd22) begin
+                c_next = SCL;
+                w_next = SWR;
+            end
+            else if (7'd22 <= r_cycle || r_cycle < 7'd32) begin
+                c_next = SCY;
+                w_next = SWR;
+            end
+            else if  (7'd32 <= r_cycle || r_cycle < 7'd34) begin
+                c_next = SCR;
+                w_next = SWG;
+            end
+            else if (7'd34 <= r_cycle || r_cycle < 7'd48) begin
+                c_next = SCR;
+                w_next = SWG;
+            end
+            else if (7'd48 <= r_cycle || r_cycle < 7'd54) begin
+                c_next = SCR;
+                if (r_cycle[0] == 0) begin
+                    w_next = SWN;
+                end
+                else begin
+                    w_next = SWG;
+                end
+            end
+            else if (7'd54 <= r_cycle || r_cycle < 7'd68) begin
+                c_next = SCR;
+                w_next = SWR;
+            end
+        end
+    end
+    
+//    always@(*) begin
+//        case (c_state) 
+//            SCG     : c_next = SCY;
+//            SCY     : c_next = (r_c_sel ? SCL : SCR);
+//            SCL     : c_next = SCY;
+//            SCR     : c_next = SCG;
+//            SCN     : c_next = (r_c_sel ? SCG : SCR);
+//            default : c_next = SCR;
+//        endcase
+//        case (w_state)
+//            SWR     : w_next = SWG;
+//            SWG     : w_next = (r_w_sel ? SWN : SWR);
+//            SWN     : w_next = (r_w_sel ? SWG : SWR);
+//            default : w_next = SWR;
+//        endcase
+//    end
+            
+    always@(posedge clk) begin
+        c_state <= c_next;
+        w_state <= w_next;
     end
  
     always@(*) begin
