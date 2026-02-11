@@ -20,31 +20,68 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 
-module tb_traffic_fsm();
+`timescale 1ns / 1ps
+//////////////////////////////////////////////////////////////////////////////////
+// Company: 
+// Engineer: 
+// 
+// Create Date: 2026/02/06 15:13:02
+// Design Name: 
+// Module Name: tb_traffic
+// Project Name: 
+// Target Devices: 
+// Tool Versions: 
+// Description: 
+// 
+// Dependencies: 
+// 
+// Revision:
+// Revision 0.01 - File Created
+// Additional Comments:
+// 
+//////////////////////////////////////////////////////////////////////////////////
 
-    reg clk;
-    reg rst;
+
+module tb_traffic_fsm();
+    reg clock;
+    reg reset_n;
     reg start;
-    wire [3:0] o_ct1;
-    wire [1:0] o_wt1;
-    wire [3:0] o_ct2;
-    wire [1:0] o_wt2;
+//    reg [1:0] flag = 2'b10;
+    wire [3:0] e_ct;
+    wire [3:0] w_ct;
+    wire [3:0] s_ct;
+    wire [3:0] n_ct;
+    wire [1:0] e_wt;
+    wire [1:0] w_wt;
+    wire [1:0] s_wt;
+    wire [1:0] n_wt;
     
-    traffic_fsm DUT0 (.clk(clk), .reset_n(rst), .i_start(start), .i_flag(1), .o_car_traffic(o_ct1), .o_walker_traffic(o_wt1));
-    traffic_fsm DUT1 (.clk(clk), .reset_n(rst), .i_start(start), .i_flag(0), .o_car_traffic(o_ct2), .o_walker_traffic(o_wt2));
-    
+
     parameter CLK_PERIOD = 4'd10;
+
+    top_fsm DUT (.clk(clock), 
+             .reset_n(reset_n), 
+             .i_start(start), 
+             .o_e_ct(e_ct), 
+             .o_w_ct(w_ct),
+             .o_s_ct(s_ct),
+             .o_n_ct(n_ct),
+             .o_e_wt(e_wt),
+             .o_w_wt(w_wt),
+             .o_s_wt(s_wt),
+             .o_n_wt(n_wt));
+    
     
     always begin
-        clk = 1'b1;
-        forever #(CLK_PERIOD/4'd2) clk = ~clk;
+        clock = 1'b1;
+        forever #(CLK_PERIOD/4'd2) clock = ~clock;
     end
     
     initial begin
         start = 1'b0;
-        rst = 1'b0;
+        reset_n = 1'b0;
         #10
-        rst = 1'b1;
+        reset_n = 1'b1;
         #10
         start = 1'b1;
         #700
